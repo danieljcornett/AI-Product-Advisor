@@ -1,0 +1,8 @@
+import openai
+
+response = openai.ChatCompletion.create(
+    model="gbt-40-mini",
+    messages=[{"role": "user", "content": "Summarize this product: 3HP Motor 220V"}]
+
+)
+

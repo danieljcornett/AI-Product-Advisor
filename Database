@@ -1,0 +1,60 @@
+import sqlite3 as db
+import pandas as pd
+
+# Connects to the SQLite database file
+conn = db.connect('sqlite.db')
+
+# Cursor is used to execute SQL commands
+cursor = conn.cursor()
+
+cursor.execute("CREATE TABLE IF NOT EXISTS Products (product_id INTEGER PRIMARY KEY, name TEXT, category TEXT, price REAL, description TEXT)")
+
+# Verify the table creation
+cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+print(cursor.fetchall())
+
+# Insert sample data into the Products table
+#cursor.execute("INSERT INTO Products VALUES (1, '3HP Motor 220V', 'Motors', 150.00, 'A powerful 3 horsepower motor operating at 220 volts.')")
+#cursor.execute("INSERT INTO Products VALUES (2, '5HP Motor 110V', 'Motors', 200.00, 'A robust 5 horsepower motor operating at 110 volts.')")
+#cursor.execute("INSERT INTO Products VALUES (3, 'Industrial Fan', 'Fans', 75.00, 'A high-speed industrial fan for cooling purposes.')")
+
+# Better way to add multiple records to the database
+products = [ (1, '3HP Motor 220V', 'Motors', 150.00, 'A powerful 3 horsepower motor operating at 220 volts.'),
+    (2, '5HP Motor 110V', 'Motors', 200.00, 'A robust 5 horsepower motor operating at 110 volts.'),
+    (3, 'Industrial Fan', 'Fans', 75.00, 'A high-speed industrial fan for cooling purposes.')]
+cursor.executemany("INSERT OR IGNORE INTO Products VALUES (?, ?, ?, ?, ?)", products)
+
+cursor.execute("SELECT * FROM Products")
+print(cursor.fetchall())
+
+# Commit changes and close the connection
+conn.commit()
+conn.close()
+
+con = db.connect('sqlite.db')
+df = pd.read_sql_query("SELECT * FROM Products", con)
+print(df)
+
+# To remove the last product from the table
+#df_new = df[:-1]
+
+def fetch_all_products():
+    con = db.connect('sqlite.db')
+    df = pd.read_sql_query("SELECT * FROM Products", con)
+    con.close()
+    return df
+
+def search_products_by_keyword(keyword):
+    con = db.connect('sqlite.db')
+    query = "SELECT * FROM Products WHERE name LIKE ? OR description LIKE ?"
+    df = pd.read_sql_query(query, con, params=(f'%{keyword}%', f'%{keyword}%'))
+    con.close()
+    return df
+
+def get_product_by_id(product_id):
+    con = db.connect('sqlite.db')
+    query = "SELECT * FROM Products WHERE product_id = ?"
+    df = pd.read_sql_query(query, con, params=(product_id,))
+    con.close()
+    return df
+
