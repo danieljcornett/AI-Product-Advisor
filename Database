@@ -1,5 +1,7 @@
 import sqlite3 as db
 import pandas as pd
+import tkinter as tk
+from tkinter import ttk
 
 # Connects to the SQLite database file
 conn = db.connect('sqlite.db')
@@ -58,3 +60,25 @@ def get_product_by_id(product_id):
     con.close()
     return df
 
+
+# Creating a GUI window to display the table
+root = tk.Tk()
+root.title("Simple Web Browser")
+
+# Create Treeview widget
+tree = ttk.Treeview(root, columns=("product_id", "name", "category", "price", "description"), show='headings')
+
+# Define the columns
+columns = ["product_id", "name", "category", "price", "description"]
+for col in columns:
+    tree.heading(col, text=col)
+    tree.column(col, width=150)
+
+# Fetch all products and insert into the treeview
+all_products = fetch_all_products()
+for index, row in all_products.iterrows():
+    tree.insert("", "end", values=(row['product_id'], row['name'], row['category'], row['price'], row['description']))
+tree.pack(expand=True, fill='both')
+
+
+root.mainloop()
