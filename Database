@@ -60,10 +60,26 @@ def get_product_by_id(product_id):
     con.close()
     return df
 
+# Creating a serch function
+def update_treeview_with_search(keyword):
+    # Clear existing entries in the treeview
+    for item in tree.get_children():
+        tree.delete(item)
+    
+    # Fetch products matching the search keyword
+    search_results = search_products_by_keyword(keyword)
+    
+    # Insert search results into the treeview
+    for index, row in search_results.iterrows():
+        tree.insert("", "end", values=(row['product_id'], row['name'], row['category'], row['price'], row['description']))
+def on_search():
+    keyword = search_entry.get()
+    update_treeview_with_search(keyword)
+    update_treeview_with_search(keyword)
 
 # Creating a GUI window to display the table
 root = tk.Tk()
-root.title("Simple Web Browser")
+root.title("AI Product Advisor - Product Database")
 
 # Create Treeview widget
 tree = ttk.Treeview(root, columns=("product_id", "name", "category", "price", "description"), show='headings')
@@ -74,11 +90,30 @@ for col in columns:
     tree.heading(col, text=col)
     tree.column(col, width=150)
 
+#Create a scrollbar 
+scrollbar = ttk.Scrollbar(root, orient="vertical", command=tree.yview)
+tree.configure(yscrollcommand=scrollbar.set)
+scrollbar.pack(side='right', fill='y')
+
+search_frame = tk.Frame(root)
+search_frame.pack(fill='x', padx=10, pady=5)
+tk.Label(search_frame, text="Search:").pack(side='left')
+search_entry = tk.Entry(search_frame)
+search_entry.pack(side='left', fill='x', expand=True, padx=5)
+search_button = tk.Button(search_frame, text="Search", command=on_search)
+search_button.pack(side='left')
+
+
+tree.pack(expand=True, fill='both')
+
 # Fetch all products and insert into the treeview
 all_products = fetch_all_products()
 for index, row in all_products.iterrows():
     tree.insert("", "end", values=(row['product_id'], row['name'], row['category'], row['price'], row['description']))
-tree.pack(expand=True, fill='both')
 
 
 root.mainloop()
+
+
+
+
