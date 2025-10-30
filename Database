@@ -13,7 +13,7 @@ cursor.execute("CREATE TABLE IF NOT EXISTS Products (product_id INTEGER PRIMARY 
 
 # Verify the table creation
 cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-print(cursor.fetchall())
+# print(cursor.fetchall())
 
 # Insert sample data into the Products table
 #cursor.execute("INSERT INTO Products VALUES (1, '3HP Motor 220V', 'Motors', 150.00, 'A powerful 3 horsepower motor operating at 220 volts.')")
@@ -23,11 +23,19 @@ print(cursor.fetchall())
 # Better way to add multiple records to the database
 products = [ (1, '3HP Motor 220V', 'Motors', 150.00, 'A powerful 3 horsepower motor operating at 220 volts.'),
     (2, '5HP Motor 110V', 'Motors', 200.00, 'A robust 5 horsepower motor operating at 110 volts.'),
-    (3, 'Industrial Fan', 'Fans', 75.00, 'A high-speed industrial fan for cooling purposes.')]
+    (3, 'Industrial Fan', 'Fans', 75.00, 'A high-speed industrial fan for cooling purposes.'),(4, 'Hydraulic Pump', 'Pumps', 300.00, 'A durable hydraulic pump for industrial applications.'),
+    (5, 'Conveyor Belt', 'Conveyors', 500.00, 'A heavy-duty conveyor belt for material handling.'),
+    (6, 'Air Compressor', 'Compressors', 250.00, 'A reliable air compressor for various pneumatic tools.'),
+    (7, 'Gearbox', 'Transmissions', 400.00, 'A high-performance gearbox for machinery.'),
+    (8, 'Industrial Valve', 'Valves', 120.00, 'A sturdy industrial valve for fluid control.'),
+    (9, 'Electric Actuator', 'Actuators', 350.00, 'An electric actuator for precise movement control.'),
+    (10, 'Cooling Tower', 'Cooling Systems', 800.00, 'A large cooling tower for industrial cooling needs.'),(11, 'Industrial Robot Arm', 'Robotics', 1500.00, 'A versatile industrial robot arm for automation tasks.'),
+    (12, 'PLC Controller', 'Controllers', 600.00, 'A programmable logic controller for industrial automation.'),
+    (13, 'Industrial Sensor', 'Sensors', 90.00, 'A high-precision industrial sensor for monitoring applications.')]
 cursor.executemany("INSERT OR IGNORE INTO Products VALUES (?, ?, ?, ?, ?)", products)
 
 cursor.execute("SELECT * FROM Products")
-print(cursor.fetchall())
+
 
 # Commit changes and close the connection
 conn.commit()
@@ -35,7 +43,7 @@ conn.close()
 
 con = db.connect('sqlite.db')
 df = pd.read_sql_query("SELECT * FROM Products", con)
-print(df)
+
 
 # To remove the last product from the table
 #df_new = df[:-1]
@@ -102,6 +110,11 @@ search_entry = tk.Entry(search_frame)
 search_entry.pack(side='left', fill='x', expand=True, padx=5)
 search_button = tk.Button(search_frame, text="Search", command=on_search)
 search_button.pack(side='left')
+
+
+
+# Frame for the entry fields
+
 
 
 tree.pack(expand=True, fill='both')
